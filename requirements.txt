@@ -1,1 +1,3 @@
-pytesseract==0.1.6
+pyocr==0.4.0
+requests==2.9.1
+dicttoxml==1.6.6
