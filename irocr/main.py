@@ -6,7 +6,6 @@ import index
 import logger
 
 
-
 def usage():
 
     info = """
@@ -38,7 +37,7 @@ def read_images(files):
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 1:
+    if len(sys.argv) == 1:
         usage()
         sys.exit(1)
 
