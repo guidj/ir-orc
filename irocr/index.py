@@ -1,5 +1,11 @@
+import os
+import tempfile
+
 import requests
 import xml.etree.cElementTree as ET
+
+import config
+import logger
 
 
 class Document(object):
@@ -9,12 +15,27 @@ class Document(object):
         self.content = content
 
 
-class Index(object):
+class SolrIndex(object):
 
     def __init__(self):
         pass
 
-    def add_documents(self, documents):
+    @property
+    def url(self):
+        cfg = config.get('solr')
+
+        if not cfg:
+            raise RuntimeError('Solr config not found')
+
+        url = 'http://{}:{}/solr/{}/update'.format(
+            cfg['host'],
+            cfg['port'],
+            cfg['core']
+        )
+
+        return url
+
+    def add(self, documents):
         assert isinstance(documents, list)
 
         root = ET.Element('add')
@@ -28,21 +49,14 @@ class Index(object):
             ET.SubElement(doc, 'field', name='id').text = str(document.id)
             ET.SubElement(doc, 'field', name='content').text = document.content
 
-            # for k, v in document.fields.iteritems():
-            #     ET.SubElement(doc, 'field', name=k).text = v
-
         tree = ET.ElementTree(root)
-        tree.write('payload.xml')
 
-        # TODO: send payload to http://localhost:8983/solr/update?commit=true
+        tmpfile = os.path.join(tempfile.tempdir, tempfile.mktemp('.tmp'))
+        tree.write(tmpfile)
 
-#TODO: delete
-if __name__ == '__main__':
+        with open(tmpfile, 'r') as fp:
+            data = ''.join(fp.readlines())
 
-    data = [
-        Document(1, 'Some document'),
-        Document(2, 'Another document')
-    ]
-
-    index = Index()
-    index.add_documents(documents=data)
+        os.remove(tmpfile)
+        response = requests.post(self.url, data=data, params={'commit': 'true'}, headers={'Content-type': 'text/xml'})
+        logger.Logger.info(response.status_code)

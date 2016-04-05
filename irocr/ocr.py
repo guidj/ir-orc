@@ -1,6 +1,6 @@
-from PIL import Image
 import sys
 
+import PIL.Image
 import pyocr
 import pyocr.builders
 import pyocr.tesseract
@@ -21,18 +21,9 @@ class OCRReader(object):
             raise RuntimeError('No OCR tool found')
 
         text = self.tool.image_to_string(
-            Image.open(filepath),
+            PIL.Image.open(filepath),
             lang=lang,
             builder=pyocr.builders.TextBuilder()
         )
 
         return text
-
-#TODO: delete
-if __name__ == '__main__':
-
-    filepath = sys.argv[1]
-    reader = OCRReader()
-    text = reader.read_image(filepath)
-
-    print(text)
