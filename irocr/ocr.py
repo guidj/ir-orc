@@ -1,5 +1,3 @@
-import sys
-
 import PIL.Image
 import pyocr
 import pyocr.builders

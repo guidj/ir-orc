@@ -10,9 +10,11 @@ import logger
 
 class Document(object):
 
-    def __init__(self, id, content):
+    def __init__(self, id, content, exif, address):
         self.id = id
         self.content = content
+        self.exif = exif
+        self.address = address
 
 
 class SolrIndex(object):
@@ -48,6 +50,8 @@ class SolrIndex(object):
 
             ET.SubElement(doc, 'field', name='id').text = str(document.id)
             ET.SubElement(doc, 'field', name='content').text = document.content
+            ET.SubElement(doc, 'field', name='exif').text = document.exif
+            ET.SubElement(doc, 'field', name='address').text = document.address
 
         tree = ET.ElementTree(root)
 

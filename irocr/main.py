@@ -2,12 +2,12 @@ import sys
 import os
 
 import ocr
+import exif
 import index
 import logger
 
 
 def usage():
-
     info = """
     irocr path [-r] [-f formats]
 
@@ -22,17 +22,19 @@ def usage():
 
 def read_images(files):
     ocr_reader = ocr.OCRReader()
+    exif_reader = exif.EXIFReader()
 
     for file in files:
-
         logger.Logger.info('Reading image file [%s]', file)
 
         text = ocr_reader.read_image(file)
 
+        exif_info, address = exif_reader.retrieve_exif_information_strings(file)
+
         dirname = os.path.dirname(file)
         id = '{}-{}'.format(os.path.split(dirname)[-1], os.path.basename(file))
 
-        yield index.Document(id, text)
+        yield index.Document(id, text, exif_info, address)
 
 
 if __name__ == '__main__':
@@ -54,11 +56,11 @@ if __name__ == '__main__':
             if sys.argv[i] == '-r':
                 recursive = True
             elif sys.argv[i] == '-f':
-                if len(sys.argv) > i+1:
+                if len(sys.argv) > i + 1:
                     usage()
                     raise RuntimeError('Missing parameter: -f')
 
-                formats = (sys.argv[i+1]).split(',')
+                formats = (sys.argv[i + 1]).split(',')
                 shape = lambda x: x if str(x).startswith('.') else ''.join(('.', x))
                 formats = [shape(f) for f in formats]
             else:
