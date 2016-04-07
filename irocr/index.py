@@ -9,16 +9,15 @@ import logger
 
 
 class Document(object):
-
-    def __init__(self, id, content, exif, address):
+    def __init__(self, id, content, exif, address, dicom_info):
         self.id = id
         self.content = content
         self.exif = exif
         self.address = address
+        self.dicom_info = dicom_info
 
 
 class SolrIndex(object):
-
     def __init__(self):
         pass
 
@@ -43,7 +42,6 @@ class SolrIndex(object):
         root = ET.Element('add')
 
         for document in documents:
-
             assert isinstance(document, Document)
 
             doc = ET.SubElement(root, 'doc')

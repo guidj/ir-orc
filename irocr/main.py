@@ -31,10 +31,12 @@ def read_images(files):
 
         exif_info, address = exif_reader.retrieve_exif_information_strings(file)
 
+        dicom_info = exif.read_dicom_file_meta(file)
+
         dirname = os.path.dirname(file)
         id = '{}-{}'.format(os.path.split(dirname)[-1], os.path.basename(file))
 
-        yield index.Document(id, text, exif_info, address)
+        yield index.Document(id, text, exif_info, address, dicom_info)
 
 
 if __name__ == '__main__':

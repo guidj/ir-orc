@@ -1,5 +1,7 @@
 from geopy.geocoders import Nominatim
 import exifread
+import dicom
+import logger
 
 
 def convert_exif_dms_to_decimal(dms_array, ref):
@@ -40,3 +42,11 @@ class EXIFReader(object):
         else:
             address = ''
         return exif_string, address
+
+
+def read_dicom_file_meta(filename):
+    try:
+        return dicom.read_file(filename)._pretty_str()
+    except:
+        logger.Logger.warning('DICOM data could not be retrieved')
+        return ''
