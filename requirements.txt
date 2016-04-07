@@ -2,3 +2,4 @@ pyocr==0.4.0
 requests==2.9.1
 dicttoxml==1.6.6
 exifread==2.1.2
+geopy==1.11.0
