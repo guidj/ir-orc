@@ -50,6 +50,7 @@ class SolrIndex(object):
             ET.SubElement(doc, 'field', name='content').text = document.content
             ET.SubElement(doc, 'field', name='exif').text = document.exif
             ET.SubElement(doc, 'field', name='address').text = document.address
+            ET.SubElement(doc, 'field', name='dicom').text = document.dicom_info
 
         tree = ET.ElementTree(root)
 
