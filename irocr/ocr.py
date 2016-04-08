@@ -4,6 +4,7 @@ import pyocr.builders
 import pyocr.tesseract
 import logger
 
+
 class OCRReader(object):
 
     def __init__(self):
@@ -25,7 +26,6 @@ class OCRReader(object):
                 builder=pyocr.builders.TextBuilder()
             )
             return text
-
-        except:
-            logger.Logger.warning('OCR could not be executed')
+        except IOError as err:
+            logger.Logger.warning('OCR could not be executed: ' + err.message)
             return ''

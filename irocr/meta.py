@@ -47,6 +47,7 @@ class EXIFReader(object):
 def read_dicom_file_meta(filename):
     try:
         return dicom.read_file(filename)._pretty_str()
-    except:
-        logger.Logger.warning('DICOM data could not be retrieved')
+    except Exception as err:
+        logger.Logger.warning('DICOM data could not be retrieved: ' + err.message)
         return ''
+
