@@ -2,7 +2,7 @@ import sys
 import os
 
 import ocr
-import exif
+import meta
 import index
 import logger
 
@@ -22,7 +22,7 @@ def usage():
 
 def read_images(files):
     ocr_reader = ocr.OCRReader()
-    exif_reader = exif.EXIFReader()
+    exif_reader = meta.EXIFReader()
 
     for file in files:
         logger.Logger.info('Reading image file [%s]', file)
@@ -31,7 +31,7 @@ def read_images(files):
 
         exif_info, address = exif_reader.retrieve_exif_information_strings(file)
 
-        dicom_info = exif.read_dicom_file_meta(file)
+        dicom_info = meta.read_dicom_file_meta(file)
 
         dirname = os.path.dirname(file)
         id = '{}-{}'.format(os.path.split(dirname)[-1], os.path.basename(file))
