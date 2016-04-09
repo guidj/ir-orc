@@ -4,30 +4,32 @@ import os
 import ocr
 import meta
 import index
+import models
 import logger
 
 
 def usage():
     info = """
-    irocr path [-r] [-f formats]
+    irocr [-r] [-f formats] [-i] [-s] path
 
     Where
         - path: is a path to a file or directory containing images
         - r: is a flag to read images recursively from directory
         - f: is a parameter, with the file formats to be read. By default, system looks for png, gif, tif
+        - i: is a flag to read photographs
+        - s: is a flag to read scanned documents
+
+        Either the -i or the -s flags must be present
     """
 
     print(info)
 
 
-def read_images(files):
-    ocr_reader = ocr.OCRReader()
+def read_photos(files):
     exif_reader = meta.EXIFReader()
 
     for file in files:
         logger.Logger.info('Reading image file [%s]', file)
-
-        text = ocr_reader.read_image(file)
 
         exif_info, address = exif_reader.retrieve_exif_information_strings(file)
 
@@ -36,35 +38,91 @@ def read_images(files):
         dirname = os.path.dirname(file)
         id = '{}-{}'.format(os.path.split(dirname)[-1], os.path.basename(file))
 
-        yield index.Document(id, text, exif_info, address, dicom_info)
+        r, g, b = meta.rgb_histogram(file)
+        rgb_hist = models.RGBHistogram(r, g, b)
+
+        yield models.Photo(id, exif_info, address, dicom_info, rgb_hist)
+
+
+def read_scans(files):
+    ocr_reader = ocr.OCRReader()
+
+    for file in files:
+        logger.Logger.info('Reading image file [%s]', file)
+
+        text = ocr_reader.read_image(file)
+
+        dirname = os.path.dirname(file)
+        id = '{}-{}'.format(os.path.split(dirname)[-1], os.path.basename(file))
+
+        yield models.Document(id, text)
+
+
+def main(operation, files):
+
+    if operation == '-s':
+
+        documents = read_scans(files)
+
+        for doc in documents:
+            ir.add_documents([doc])
+
+    elif operation == '-i':
+
+        photos = read_photos(files)
+
+        for photo in photos:
+            ir.add_photos([photo])
 
 
 if __name__ == '__main__':
 
-    if len(sys.argv) < 2:
+    argc = len(sys.argv)
+    if argc < 2:
         usage()
         sys.exit(1)
 
     path = None
     recursive = False
-    formats = ['.gif, .png', '.tif']
+    operation = None
+    formats = ['.gif', '.png', '.tif']
     ir = index.SolrIndex()
 
-    for i in range(1, len(sys.argv)):
-        if i == 1:
+    for i in range(1, argc):
+        if i == argc - 1:
             path = sys.argv[i]
         else:
 
             if sys.argv[i] == '-r':
                 recursive = True
             elif sys.argv[i] == '-f':
-                if len(sys.argv) > i + 1:
+                if argc < i + 1:
                     usage()
                     raise RuntimeError('Missing parameter: -f')
 
                 formats = (sys.argv[i + 1]).split(',')
                 shape = lambda x: x if str(x).startswith('.') else ''.join(('.', x))
                 formats = [shape(f) for f in formats]
+            elif sys.argv[i] == '-i':
+                if operation is None:
+                    operation = sys.argv[i]
+                else:
+                    usage()
+                    if operation == sys.argv[i]:
+                        raise RuntimeError('Flags {} is repeated', sys.argv[i])
+                    else:
+                        raise RuntimeError('Flags {} and {} cannot be used at the same time',
+                                           operation, sys.argv[i])
+            elif sys.argv[i] == '-s':
+                if operation is None:
+                    operation = sys.argv[i]
+                else:
+                    usage()
+                    if operation == sys.argv[i]:
+                        raise RuntimeError('Flags {} is repeated', sys.argv[i])
+                    else:
+                        raise RuntimeError('Flags {} and {} cannot be used at the same time',
+                                           operation, sys.argv[i])
             else:
                 usage()
                 raise RuntimeError('Unknown parameter {}'.format(sys.argv[i]))
@@ -93,7 +151,4 @@ if __name__ == '__main__':
         else:
             files.append(path)
 
-    documents = read_images(files)
-
-    for doc in documents:
-        ir.add([doc])
+    main(operation, files)

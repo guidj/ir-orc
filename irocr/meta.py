@@ -1,6 +1,8 @@
 from geopy.geocoders import Nominatim
 import exifread
 import dicom
+import cv2
+
 import logger
 
 
@@ -46,8 +48,26 @@ class EXIFReader(object):
 
 def read_dicom_file_meta(filename):
     try:
-        return dicom.read_file(filename)._pretty_str()
+        return str(dicom.read_file(filename))
     except Exception as err:
         logger.Logger.warning('DICOM data could not be retrieved: ' + err.message)
         return ''
 
+
+def rgb_histogram(filename, normalized=True):
+
+    image = cv2.imread(filename)
+
+    chans = cv2.split(image)
+
+    b, g, r = cv2.calcHist([chans[0]], [0], None, [64], [0, 64]), \
+            cv2.calcHist([chans[1]], [0], None, [64], [0, 64]), \
+            cv2.calcHist([chans[2]], [0], None, [64], [0, 64])
+
+    values = map(lambda x: sum(x)[0], (r, g, b))
+
+    if normalized:
+        tally = sum(values)
+        return map(lambda x: x/tally, values)
+    else:
+        return values
