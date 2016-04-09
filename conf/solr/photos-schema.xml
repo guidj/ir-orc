@@ -177,6 +177,18 @@
           NRT-friendly.
           -->
 
+        <!-- photo fields -->
+        <field name="exif" type="string" indexed="true" stored="true" multiValued="false"/>
+        <field name="address" type="string" indexed="true" stored="true" multiValued="false"/>
+        <field name="dicom" type="string" indexed="true" stored="true" multiValued="false"/>
+        <field name="dominant_rgb_color" type="string" indexed="true" stored="true" multiValued="false"/>
+        <field name="color.r" type="long" indexed="true" stored="true" multiValued="false"/>
+        <field name="color.g" type="long" indexed="true" stored="true" multiValued="false"/>
+        <field name="color.b" type="long" indexed="true" stored="true" multiValued="false"/>
+        <field name="is_low_constrast" type="boolean" indexed="true" stored="true" multiValued="false"/>
+        <field name="keypoints.x" type="long" indexed="true" stored="true" multiValued="true"/>
+        <field name="keypoints.y" type="long" indexed="true" stored="true" multiValued="true"/>
+
         <!-- Dynamic field definitions allow using convention over configuration
             for fields via the specification of patterns to match field names.
             EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)

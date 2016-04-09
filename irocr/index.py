@@ -79,8 +79,9 @@ class SolrIndex(object):
             ET.SubElement(doc, 'field', name='is_low_constrast').text = str(photo.is_low_contrast)
 
             if photo.keypoints is not None:
-                ET.SubElement(doc, 'field', name='keypoints.x').text = str(photo.keypoints[:, 0])
-                ET.SubElement(doc, 'field', name='keypoints.y').text = str(photo.keypoints[:, 1])
+                for x, y in photo.keypoints:
+                    ET.SubElement(doc, 'field', name='keypoints.x').text = str(x)
+                    ET.SubElement(doc, 'field', name='keypoints.y').text = str(y)
 
         tree = ET.ElementTree(root)
 
