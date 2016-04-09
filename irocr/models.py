@@ -27,9 +27,11 @@ class RGBHistogram(object):
 
 class Photo(object):
 
-    def __init__(self, id, exif, address, dicom_info, rgb_histogram):
+    def __init__(self, id, exif, address, dicom_info, rgb_histogram, is_low_constrast=False, keypoints=None):
         self.id = id
         self.exif = exif
         self.address = address
         self.dicom_info = dicom_info
         self.rgb_histogram = rgb_histogram
+        self.is_low_contrast = is_low_constrast
+        self.keypoints = keypoints

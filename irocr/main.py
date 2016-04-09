@@ -40,8 +40,10 @@ def read_photos(files):
 
         r, g, b = meta.rgb_histogram(file)
         rgb_hist = models.RGBHistogram(r, g, b)
+        is_low_contrast = meta.is_low_contrast(file)
+        keypoints = meta.censure(file)
 
-        yield models.Photo(id, exif_info, address, dicom_info, rgb_hist)
+        yield models.Photo(id, exif_info, address, dicom_info, rgb_hist, is_low_contrast, keypoints)
 
 
 def read_scans(files):
@@ -152,3 +154,5 @@ if __name__ == '__main__':
             files.append(path)
 
     main(operation, files)
+
+    # TODO: schema.xml for `papers` and `photos`

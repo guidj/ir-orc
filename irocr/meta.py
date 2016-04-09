@@ -6,6 +6,7 @@ from geopy.geocoders import Nominatim
 import skimage
 import skimage.io
 import skimage.exposure
+import skimage.feature
 import skimage.color
 
 
@@ -65,14 +66,29 @@ def rgb_histogram(filename, normalize=True):
     imagef = skimage.img_as_float(image)
 
     r, g, b = imagef[:, :, 0].copy(), imagef[:, :, 1].copy(), imagef[:, :, 2].copy()
-
     rh, gh, bh, = map(skimage.exposure.histogram, (r.copy(), g.copy(), b.copy()))
-
     rhs, ghs, bhs = map(lambda x: sum(x[0]*x[1]), (rh, gh, bh))
 
     if normalize:
-
         s = sum((rhs, ghs, bhs))
         rhs, ghs, bhs = map(lambda x: x/s, (rhs, ghs, bhs))
 
     return rhs, ghs, bhs
+
+
+def is_low_contrast(filename):
+    image = skimage.io.imread(filename)
+    return skimage.exposure.is_low_contrast(image)
+
+
+def censure(filename):
+    """
+    The CENSURE feature detector is a scale-invariant center-surround detector (CENSURE) that claims to outperform
+    other detectors and is capable of real-time implementation.
+    """
+
+    detector = skimage.feature.CENSURE()
+    image = skimage.color.rgb2gray(skimage.io.imread(filename))
+    detector.detect(image)
+    return detector.keypoints
+
