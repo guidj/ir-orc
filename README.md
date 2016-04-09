@@ -8,5 +8,5 @@ irocr
 Usage
 ----------
 
-./app-env/bin/python -m irocr.main path [-r] [-f png,...]
+./app-env/bin/python -m irocr.main [-r] [-f png,...] [-i] [-s] path
 
