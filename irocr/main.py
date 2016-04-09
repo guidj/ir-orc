@@ -15,7 +15,7 @@ def usage():
     Where
         - path: is a path to a file or directory containing images
         - r: is a flag to read images recursively from directory
-        - f: is a parameter, with the file formats to be read. By default, system looks for png, gif, tif
+        - f: is a parameter, with the file formats to be read. By default, system looks for png, gif, tif, jpg
         - i: is a flag to read photographs
         - s: is a flag to read scanned documents
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     path = None
     recursive = False
     operation = None
-    formats = ['.gif', '.png', '.tif']
+    formats = ['.gif', '.png', '.tif', '.jpg']
     ir = index.SolrIndex()
 
     for i in range(1, argc):

@@ -1,9 +1,12 @@
-from geopy.geocoders import Nominatim
-import exifread
 import dicom
-import cv2
-
+import dicom.errors
+import exifread
 import logger
+from geopy.geocoders import Nominatim
+import skimage
+import skimage.io
+import skimage.exposure
+import skimage.color
 
 
 def convert_exif_dms_to_decimal(dms_array, ref):
@@ -48,26 +51,28 @@ class EXIFReader(object):
 
 def read_dicom_file_meta(filename):
     try:
-        return str(dicom.read_file(filename))
-    except Exception as err:
-        logger.Logger.warning('DICOM data could not be retrieved: ' + err.message)
+        with open(filename, 'rb') as fp:
+            data = dicom.read_file(fp)
+        return str(data)
+    except dicom.errors.InvalidDicomError as err:
+        logger.Logger.warning('DICOM data could not be retrieved: {}'.format(err))
         return ''
 
 
-def rgb_histogram(filename, normalized=True):
+def rgb_histogram(filename, normalize=True):
 
-    image = cv2.imread(filename)
+    image = skimage.io.imread(filename)
+    imagef = skimage.img_as_float(image)
 
-    chans = cv2.split(image)
+    r, g, b = imagef[:, :, 0].copy(), imagef[:, :, 1].copy(), imagef[:, :, 2].copy()
 
-    b, g, r = cv2.calcHist([chans[0]], [0], None, [64], [0, 64]), \
-            cv2.calcHist([chans[1]], [0], None, [64], [0, 64]), \
-            cv2.calcHist([chans[2]], [0], None, [64], [0, 64])
+    rh, gh, bh, = map(skimage.exposure.histogram, (r.copy(), g.copy(), b.copy()))
 
-    values = map(lambda x: sum(x)[0], (r, g, b))
+    rhs, ghs, bhs = map(lambda x: sum(x[0]*x[1]), (rh, gh, bh))
 
-    if normalized:
-        tally = sum(values)
-        return map(lambda x: x/tally, values)
-    else:
-        return values
+    if normalize:
+
+        s = sum((rhs, ghs, bhs))
+        rhs, ghs, bhs = map(lambda x: x/s, (rhs, ghs, bhs))
+
+    return rhs, ghs, bhs
