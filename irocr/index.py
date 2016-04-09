@@ -36,7 +36,7 @@ class SolrIndex(object):
             doc = ET.SubElement(root, 'doc')
 
             ET.SubElement(doc, 'field', name='id').text = str(document.id)
-            ET.SubElement(doc, 'field', name='content').text = document.content
+            ET.SubElement(doc, 'field', name='text').text = document.text
 
         tree = ET.ElementTree(root)
 

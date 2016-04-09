@@ -1,7 +1,7 @@
 class Document(object):
-    def __init__(self, id, content):
+    def __init__(self, id, text):
         self.id = id
-        self.content = content
+        self.text = text
 
 
 class RGBHistogram(object):
