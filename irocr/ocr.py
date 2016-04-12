@@ -25,6 +25,7 @@ class OCRReader(object):
                     lang=lang,
                     builder=pyocr.builders.TextBuilder()
                 )
+                f.close()
             return text
         except IOError as err:
             logger.Logger.warning('OCR could not be executed: ' + err.message)
