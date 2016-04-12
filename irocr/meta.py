@@ -8,6 +8,7 @@ import skimage.io
 import skimage.exposure
 import skimage.feature
 import skimage.color
+import time
 
 
 def convert_exif_dms_to_decimal(dms_array, ref):
@@ -36,6 +37,7 @@ class EXIFReader(object):
         lat = convert_exif_dms_to_decimal(tags['GPS GPSLatitude'].values, tags['GPS GPSLatitudeRef'].values)
         lon = convert_exif_dms_to_decimal(tags['GPS GPSLongitude'].values, tags['GPS GPSLongitudeRef'].values)
         location = self.geolocator.reverse((lat, lon))
+        time.sleep(1)
         return location
 
     def retrieve_exif_information_strings(self, filepath):
