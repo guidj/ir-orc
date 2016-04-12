@@ -87,7 +87,7 @@ if __name__ == '__main__':
     path = None
     recursive = False
     operation = None
-    formats = ['.gif', '.png', '.tif', '.jpg']
+    formats = ['.gif', '.png', '.tif', '.jpg', 'dcm']
     ir = index.SolrIndex()
 
     for i in range(1, argc):
