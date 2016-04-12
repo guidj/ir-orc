@@ -1,7 +1,7 @@
 import os.path
 
-import config
-import logger
+from irocr import config
+from irocr import logger
 
 
 try:
