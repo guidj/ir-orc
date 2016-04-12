@@ -63,24 +63,31 @@ def read_dicom_file_meta(filename):
 
 
 def rgb_histogram(filename, normalize=True):
+    try:
+        image = skimage.io.imread(filename)
+        imagef = skimage.img_as_float(image)
 
-    image = skimage.io.imread(filename)
-    imagef = skimage.img_as_float(image)
+        r, g, b = imagef[:, :, 0].copy(), imagef[:, :, 1].copy(), imagef[:, :, 2].copy()
+        rh, gh, bh, = map(skimage.exposure.histogram, (r.copy(), g.copy(), b.copy()))
+        rhs, ghs, bhs = map(lambda x: sum(x[0] * x[1]), (rh, gh, bh))
 
-    r, g, b = imagef[:, :, 0].copy(), imagef[:, :, 1].copy(), imagef[:, :, 2].copy()
-    rh, gh, bh, = map(skimage.exposure.histogram, (r.copy(), g.copy(), b.copy()))
-    rhs, ghs, bhs = map(lambda x: sum(x[0]*x[1]), (rh, gh, bh))
+        if normalize:
+            s = sum((rhs, ghs, bhs))
+            rhs, ghs, bhs = map(lambda x: x / s, (rhs, ghs, bhs))
 
-    if normalize:
-        s = sum((rhs, ghs, bhs))
-        rhs, ghs, bhs = map(lambda x: x/s, (rhs, ghs, bhs))
-
-    return rhs, ghs, bhs
+        return rhs, ghs, bhs
+    except IOError as err:
+        logger.Logger.warning('rgb_histogramm could not be retrieved: {}'.format(err))
+        return ''
 
 
 def is_low_contrast(filename):
-    image = skimage.io.imread(filename)
-    return skimage.exposure.is_low_contrast(image)
+    try:
+        image = skimage.io.imread(filename)
+        return skimage.exposure.is_low_contrast(image)
+    except IOError as err:
+        logger.Logger.warning('contrast info could not be retrieved: {}'.format(err))
+        return ''
 
 
 def censure(filename):
@@ -88,9 +95,11 @@ def censure(filename):
     The CENSURE feature detector is a scale-invariant center-surround detector (CENSURE) that claims to outperform
     other detectors and is capable of real-time implementation.
     """
-
-    detector = skimage.feature.CENSURE()
-    image = skimage.color.rgb2gray(skimage.io.imread(filename))
-    detector.detect(image)
-    return detector.keypoints
-
+    try:
+        detector = skimage.feature.CENSURE()
+        image = skimage.color.rgb2gray(skimage.io.imread(filename))
+        detector.detect(image)
+        return detector.keypoints
+    except IOError as err:
+        logger.Logger.warning('keypoints could not be retrieved: {}'.format(err))
+        return ''
