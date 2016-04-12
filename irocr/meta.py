@@ -69,7 +69,8 @@ def rgb_histogram(filename, normalize=True):
 
     except IOError as err:
         logger.Logger.warning('rgb_histogramm could not be retrieved: {}'.format(err))
-        return ''
+        rhs, ghs, bhs = '', '', ''
+        return rhs, ghs, bhs
 
     r, g, b = imagef[:, :, 0].copy(), imagef[:, :, 1].copy(), imagef[:, :, 2].copy()
     rh, gh, bh, = map(skimage.exposure.histogram, (r.copy(), g.copy(), b.copy()))
