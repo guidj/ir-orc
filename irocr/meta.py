@@ -66,7 +66,10 @@ def rgb_histogram(filename, normalize=True):
     try:
         image = skimage.io.imread(filename)
         imagef = skimage.img_as_float(image)
-
+    except IOError as err:
+        logger.Logger.warning('rgb_histogramm could not be retrieved: {}'.format(err))
+        return ''
+    try:
         r, g, b = imagef[:, :, 0].copy(), imagef[:, :, 1].copy(), imagef[:, :, 2].copy()
         rh, gh, bh, = map(skimage.exposure.histogram, (r.copy(), g.copy(), b.copy()))
         rhs, ghs, bhs = map(lambda x: sum(x[0] * x[1]), (rh, gh, bh))
@@ -76,7 +79,8 @@ def rgb_histogram(filename, normalize=True):
             rhs, ghs, bhs = map(lambda x: x / s, (rhs, ghs, bhs))
 
         return rhs, ghs, bhs
-    except Exception as err:
+
+    except TypeError as err:
         logger.Logger.warning('rgb_histogramm could not be retrieved: {}'.format(err))
         return ''
 
