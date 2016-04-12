@@ -36,8 +36,8 @@ class EXIFReader(object):
     def retrieve_location(self, tags):
         lat = convert_exif_dms_to_decimal(tags['GPS GPSLatitude'].values, tags['GPS GPSLatitudeRef'].values)
         lon = convert_exif_dms_to_decimal(tags['GPS GPSLongitude'].values, tags['GPS GPSLongitudeRef'].values)
+        time.sleep(5)
         location = self.geolocator.reverse((lat, lon))
-        time.sleep(1)
         return location
 
     def retrieve_exif_information_strings(self, filepath):
