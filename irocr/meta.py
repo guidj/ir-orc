@@ -30,6 +30,7 @@ class EXIFReader(object):
     def read_exif_tags(filepath):
         with open(filepath, 'rb') as fp:
             data = exifread.process_file(fp)
+            fp.close()
         return data
 
     def retrieve_location(self, tags):
