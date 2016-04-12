@@ -76,7 +76,7 @@ def rgb_histogram(filename, normalize=True):
             rhs, ghs, bhs = map(lambda x: x / s, (rhs, ghs, bhs))
 
         return rhs, ghs, bhs
-    except IOError as err:
+    except Exception as err:
         logger.Logger.warning('rgb_histogramm could not be retrieved: {}'.format(err))
         return ''
 
@@ -85,7 +85,7 @@ def is_low_contrast(filename):
     try:
         image = skimage.io.imread(filename)
         return skimage.exposure.is_low_contrast(image)
-    except IOError as err:
+    except Exception as err:
         logger.Logger.warning('contrast info could not be retrieved: {}'.format(err))
         return ''
 
@@ -100,6 +100,6 @@ def censure(filename):
         image = skimage.color.rgb2gray(skimage.io.imread(filename))
         detector.detect(image)
         return detector.keypoints
-    except IOError as err:
+    except Exception as err:
         logger.Logger.warning('keypoints could not be retrieved: {}'.format(err))
         return ''
