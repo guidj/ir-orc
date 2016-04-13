@@ -54,7 +54,7 @@ def query_by_image():
                 json_query['filter'].append('keypoints.y:' + str(y))
 
             response = requests.post(url, data=json.dumps(json_query), headers={'Content-type': 'application/json'})
-            return response.text
+            return response.json()
 
     return '''
     <!doctype html>
