@@ -40,7 +40,8 @@ class EXIFReader(object):
         lon = convert_exif_dms_to_decimal(tags['GPS GPSLongitude'].values, tags['GPS GPSLongitudeRef'].values)
         time.sleep(2)
 
-        location = requests.get('http://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json'.format(
+        location = requests.get('http://nominatim.openstreetmap.org/reverse?'
+                                'lat={}&lon={}&format=json&accept-language=en'.format(
             str(round(lat, 4)),
             str(round(lon, 4))
         )).content
@@ -55,7 +56,7 @@ class EXIFReader(object):
 
         if all(k in tags for k in ('GPS GPSLatitude', 'GPS GPSLatitudeRef',
                                    'GPS GPSLongitude', 'GPS GPSLongitudeRef')):
-            address = self.retrieve_location(tags).address
+            address = self.retrieve_location(tags)
         else:
             address = ''
         return exif_string, address
@@ -114,8 +115,3 @@ def censure(filename):
     except Exception as err:
         logger.Logger.warning('keypoints could not be retrieved: {}'.format(err))
         return ''
-
-
-if __name__ == '__main__':
-    exifreader = EXIFReader()
-    exifreader.retrieve_exif_information_strings('../img_2772.jpg')
