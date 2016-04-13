@@ -52,7 +52,7 @@ class EXIFReader(object):
 
     def retrieve_exif_information_strings(self, filepath):
         tags = self.read_exif_tags(filepath)
-        exif_string = exifread.make_string(tags)
+        exif_string = ''.join([k + ': ' + str(v) + '\n' for k, v in tags.items() if k != 'JPEGThumbnail'])
 
         if all(k in tags for k in ('GPS GPSLatitude', 'GPS GPSLatitudeRef',
                                    'GPS GPSLongitude', 'GPS GPSLongitudeRef')):
