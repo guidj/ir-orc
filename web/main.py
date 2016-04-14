@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from irocr.meta import censure
 from irocr import config
 
-UPLOAD_FOLDER = '/root/uploads'
+UPLOAD_FOLDER = '/Users/Philipp/Desktop'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
@@ -54,12 +54,12 @@ def query_by_image():
                 json_query['filter'].append('keypoints.y:' + str(y))
 
             response = requests.post(url, data=json.dumps(json_query), headers={'Content-type': 'application/json'})
-            return response.text
+            return flask.jsonify(response.json())
 
     return '''
     <!doctype html>
     <title>Upload new File</title>
-    <h1>Search for image</h1>
+    <h1>Search by image</h1>
     <form action="" method=post enctype=multipart/form-data>
       <p><input type=file name=file>
          <input type=submit value=Search>
