@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from irocr.meta import censure
 from irocr import config
 
-UPLOAD_FOLDER = '/root/uploads'
+UPLOAD_FOLDER = '/root/uploads/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
