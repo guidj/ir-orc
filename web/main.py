@@ -48,7 +48,7 @@ def query_by_image():
                 'photos'
             )
 
-            json_query = {'query': 'exif.*', 'filter': []}
+            json_query = {'query': '"exif".*', 'filter': []}
             for x, y in keypoints:
                 json_query['filter'].append('keypoints.x:' + str(x))
                 json_query['filter'].append('keypoints.y:' + str(y))
