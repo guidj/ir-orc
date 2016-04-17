@@ -42,12 +42,12 @@ def query_by_image():
             file.save(fullpath)
             keypoints = censure(fullpath)
 
-            url = 'http://{}:{}/solr/{}/query'.format(
+            url = 'http://{}:{}/solr/{}/query?echoParams=none'.format(
                 solar_config.host,
                 solar_config.port,
                 'photos'
             )
-            # ?echoParams=none
+
 
             json_query = {'filter': [], 'query': '*'}
             for x, y in keypoints:
