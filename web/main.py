@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 from irocr.meta import censure
 from irocr import config
 
-UPLOAD_FOLDER = '/root/uploads/'
+UPLOAD_FOLDER = 'uploads/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
@@ -48,7 +48,7 @@ def query_by_image():
                 'photos'
             )
 
-            json_query = {'filter': [], 'query': '*'}
+            json_query = {'query': '*:*', 'filter': []}
             for x, y in keypoints:
                 json_query['filter'].append('keypoints.x:' + str(x))
                 json_query['filter'].append('keypoints.y:' + str(y))
